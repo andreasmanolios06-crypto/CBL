@@ -7,7 +7,7 @@ public class Game {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Demo"); //creating a frame (new window)
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit application when window is closed
-        frame.setLayout(null); //using no layout managers
+        frame.setLayout(null); //using no layout managers, 121412512511
 
         JButton button = new JButton("test"); //creating a button
         button.setBounds(300,275,200,50); //setting position and size of button
@@ -25,3 +25,4 @@ public class Game {
 
     }
 }
+
