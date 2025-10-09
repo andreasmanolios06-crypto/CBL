@@ -6,28 +6,52 @@ import java.awt.event.ActionEvent;
 
 
 public class GamePanel extends JPanel implements ActionListener {
-    public static final int WIDTH = 600;
+    //constants defining the game panel size
+    public static final int WIDTH = 600; 
     public static final int HEIGHT = 800;
 
+    //Game state variables
     private Timer gameTimer; 
-    private int[] starX = new int[100];
-    private int[] starY = new int[100];
-    private int[] starSpeed = new int[400];
+    private int[] starX = new int[100]; //X positions of 100 stars
+    private int[] starY = new int[100]; //Y positions of 100 stars
+    private int[] starSpeed = new int[100]; //Speed of each star
 
+    //keyhandler declaration
+    KeyHandler keyHandler = new KeyHandler();
+
+    //player instance
+    private Player player = new Player(
+        WIDTH/2 - 32, 
+        HEIGHT - 100, 
+        64, 
+        64, 
+        7, 
+        "src/sprites/swordfish_sprite.png");
+
+
+
+    //game panel instance   
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.BLACK);
+        setFocusable(true); //can recieve key input focus
+        setDoubleBuffered(true);
+
+        //Allowing our keyHandler to listen to keys
+        addKeyListener(keyHandler);
+        
+        //make sure window is focused so you can detect input
+        requestFocusInWindow();
 
         //Initializing the stars positions and speeds
         for (int i = 0; i < starX.length; i++) {
             starX[i] = (int)(Math.random() * WIDTH);
             starY[i] = (int)(Math.random() * HEIGHT);
-            starSpeed[i] = 1 + (int)(Math.random() * 3);
+            starSpeed[i] = 1 + (int)(Math.random() * 3); //Speed between 1, 2 or 3
         }
 
-        //Create game timer (60 FPS)
-
-        gameTimer = new Timer(1000/60, this);
+        //Create game timer (60 FPS) (1000ms/60 = ~16.67ms per frame)
+        gameTimer = new Timer(1000/60, this);  
         gameTimer.start(); //Begin playing animation
     }
 
@@ -38,7 +62,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }        
         
     private void updateGame() {
-        //Update star positions
+        //Update star positions (moving down the screen)
         for (int i = 0; i < starY.length; i++) {
             starY[i] += starSpeed[i];
             
@@ -49,6 +73,9 @@ public class GamePanel extends JPanel implements ActionListener {
                 starSpeed[i] = 1 + (int)(Math.random() * 3);
             }
         }
+
+        //player movement
+        player.update(keyHandler);
     }
     
     @Override
@@ -65,7 +92,11 @@ public class GamePanel extends JPanel implements ActionListener {
             g.fillRect(starX[i], starY[i], 2, 2);
         }
 
-        //Future game drawing code goes here
+        //Draw player sprite
+        player.draw(g);
+
     }
+
+
 }
 
