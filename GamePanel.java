@@ -35,8 +35,8 @@ public class GamePanel extends JPanel implements Runnable {
         7, 
         "src/sprites/swordfish_sprite.png");
 
-    //asteroid instance
-    private Asteroid asteroid =  new Asteroid(1, 0, -64, 128, 128, 3, "src/sprites/asteroid_placeholder.png");
+    //asteroid manager instance
+    private Spawner spawner = new Spawner(5, GamePanel.WIDTH);
 
     //game panel instance   
     public GamePanel() {
@@ -109,8 +109,8 @@ public class GamePanel extends JPanel implements Runnable {
         //player movement with delta time
         player.update(keyHandler, delta);
 
-        //asteroid movement with delta time
-        asteroid.update(delta);
+        //spawner movement with delta time
+        spawner.update(delta);
     }
     
     private void updateFPS() {
@@ -146,7 +146,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g);
 
         //Draw asteroid sprite
-        asteroid.draw(g);
+        spawner.draw(g);
 
         //Draw FPS Count 
         g.setColor(Color.GREEN);

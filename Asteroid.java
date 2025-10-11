@@ -7,7 +7,7 @@ public class Asteroid {
     private int width;
     private int height;
 
-    private int lane; //determins which lane it will be loaded in
+    private int lane; //determine which lane it will be loaded in
 
     private int x; //Initial X position of asteroid
     private int y; //Initial Y position of asteroid
@@ -49,6 +49,5 @@ public class Asteroid {
     //causes movement of asteroid
     private void fall(double delta) {
         y += velocity * delta;
-        if (y >= GamePanel.HEIGHT) y = -64; //Prevent moving off left edge
     }
 }
