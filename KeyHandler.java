@@ -19,7 +19,7 @@ public class KeyHandler implements KeyListener {
      */
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-
+ 
         if (code == KeyEvent.VK_A|| code == KeyEvent.VK_LEFT) {
             leftPressed = true;
         }

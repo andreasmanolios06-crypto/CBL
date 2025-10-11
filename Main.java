@@ -18,5 +18,7 @@ public class Main {
         frame.setVisible(true);
         frame.setFocusable(true);
         gamePanel.requestFocusInWindow();
+
+        gamePanel.startGame();
     }
 }

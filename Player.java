@@ -17,7 +17,7 @@ public class Player {
 
     //Constructor to initialize player position and size
     public Player(int startX, int startY, int width, int height, int velocity, String spritePath) {
-        //Initialize player position and size
+        //Initialize player position and sizes
         this.x = startX;
         this.y = startY;
         this.width = width;
@@ -28,12 +28,16 @@ public class Player {
         
     }
     
-    public void update(KeyHandler keyHandler) {
+    public void update(KeyHandler keyHandler, double delta) {
+        if (keyHandler.leftPressed && keyHandler.rightPressed) {
+            //both pressed, character remains stationary
+            return;
+        }
         if (keyHandler.leftPressed) {
-            moveLeft();
+            moveLeft(delta);
         }
         if (keyHandler.rightPressed) {
-            moveRight();
+            moveRight(delta);
         }
     }
     
@@ -50,14 +54,14 @@ public class Player {
     }
     
     //Moves character to the left
-    private void moveLeft() {
-        x -= velocity;
+    private void moveLeft(double delta) {
+        x -= velocity * delta;
         if (x < 0) x = 0; //Prevent moving off left edge
     }
 
     //Moves character to the right
-    private void moveRight() {
-        x += velocity;
+    private void moveRight(double delta) {
+        x += velocity * delta;
         if (x + width > GamePanel.WIDTH) x = GamePanel.WIDTH - width; //Prevent moving off right edge
     }
 }
