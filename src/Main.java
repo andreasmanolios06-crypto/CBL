@@ -1,5 +1,8 @@
 package src;
 import javax.swing.*;
+//import java.awt.*;
+//import java.awt.event.ActionListener;
+//import java.awt.event.ActionEvent;
 
 public class Main {
     
@@ -11,7 +14,11 @@ public class Main {
         frame.add(gamePanel);
         
         frame.pack();
-        frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null); //centers the window
         frame.setVisible(true);
+        frame.setFocusable(true);
+        gamePanel.requestFocusInWindow();
+
+        gamePanel.startGame();
     }
 }
