@@ -1,6 +1,7 @@
 package src;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Iterator;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -33,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
         64, 
         64, 
         7, 
+        3,
         "src/sprites/swordfish_sprite.png");
 
     //asteroid manager instance
@@ -106,11 +108,13 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        //player movement with delta time
+        //player movement with delta time 
         player.update(keyHandler, delta);
 
         //spawner movement with delta time
         spawner.update(delta);
+
+        checkCollisions();
     }
     
     private void updateFPS() {
@@ -122,10 +126,20 @@ public class GamePanel extends JPanel implements Runnable {
             currentFps = frameCount;
             frameCount = 0;
             lastFpsTime = currentTime;
-            
-            //print fps to console
-            System.out.println("FPS: " + currentFps);
         }
+    }
+
+    public void checkCollisions() {
+        //between player and asteroid
+        Iterator<Asteroid> iterator = spawner.getAsteroids().iterator();
+        while (iterator.hasNext()) {
+            Asteroid asteroid = iterator.next();
+            if (player.intersects(asteroid)) {
+                player.takeDamage();
+                iterator.remove(); // removes asteroid that collided with player
+                break;
+            }
+        }   
     }
 
     @Override
@@ -143,7 +157,10 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         //Draw player sprite
-        player.draw(g);
+        if (player.isActive()) {
+            player.draw(g);
+        }
+        
 
         //Draw asteroid sprite
         spawner.draw(g);

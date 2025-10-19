@@ -2,29 +2,23 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 
-public class Player {
-    //Variables defining player size & position
-    private int width;
-    private int height;
-
-    private int x; //Initial X position of player
-    private int y; //Initial Y position of player
-
+public class Player extends Entity{
     private int velocity; //Movement speed of player
+    private int lives; //number of lives player has
+
+    private boolean active = true; 
 
     private Image sprite; //Scaled player sprite image
 
 
     //Constructor to initialize player position and size
-    public Player(int startX, int startY, int width, int height, int velocity, String spritePath) {
-        //Initialize player position and sizes
-        this.x = startX;
-        this.y = startY;
-        this.width = width;
-        this.height = height;
+    public Player(int startX, int startY, int width, int height, int velocity, int lives, String spritePath) {
+        //Initialize asteroid position and sizes
+        super(startX, startY, width, height);
+        this.lives = lives;
         this.velocity = velocity;
 
-        loadSprite(spritePath); //Load player sprite from file
+        loadSprite(spritePath); //Load asteroid sprite from file
         
     }
     
@@ -39,7 +33,12 @@ public class Player {
         if (keyHandler.rightPressed) {
             moveRight(delta);
         }
+
+        if (lives <= 0) {
+            die();
+        }
     }
+
     
     //Loads player sprite from file
     private void loadSprite(String path) {
@@ -64,4 +63,17 @@ public class Player {
         x += velocity * delta;
         if (x + width > GamePanel.WIDTH) x = GamePanel.WIDTH - width; //Prevent moving off right edge
     }
+
+    private void die() {
+        active = false;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void takeDamage() {
+        lives--;
+    }
+
 }

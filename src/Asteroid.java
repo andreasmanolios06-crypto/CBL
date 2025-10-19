@@ -2,15 +2,8 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 
-public class Asteroid {
-    //Variables defining asteroid size & position
-    private int width;
-    private int height;
-
+public class Asteroid extends Entity {
     private int lane; //determine which lane it will be loaded in
-
-    private int x; //Initial X position of asteroid
-    private int y; //Initial Y position of asteroid
 
     private int velocity; //Movement speed of asteroid
 
@@ -20,11 +13,7 @@ public class Asteroid {
     //Constructor to initialize player position and size
     public Asteroid(int lane, int startX, int startY, int width, int height, int velocity, String spritePath) {
         //Initialize asteroid position and sizes
-        this.lane = lane;
-        this.x = startX;
-        this.y = startY;
-        this.width = width;
-        this.height = height;
+        super(startX, startY, width, height);
         this.velocity = velocity;
 
         loadSprite(spritePath); //Load asteroid sprite from file
@@ -49,11 +38,6 @@ public class Asteroid {
     //causes movement of asteroid
     private void fall(double delta) {
         y += velocity * delta;
-    }
-
-    //returns Y-coordinate position of asteroid
-    public int getY() {
-        return this.y;
     }
     
 }
