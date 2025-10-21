@@ -1,6 +1,7 @@
 package src;
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Player extends Entity{
     private int velocity; //Movement speed of player
@@ -9,6 +10,10 @@ public class Player extends Entity{
     private boolean active = true; 
 
     private Image sprite; //Scaled player sprite image
+
+    public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    private long lastShotTime = 0;
+    private final long shootDelay = 300; // 0.3 seconds
 
 
     //Constructor to initialize player position and size
@@ -34,6 +39,28 @@ public class Player extends Entity{
             moveRight(delta);
         }
 
+        // Shooting logic
+        // Shooting while holding SPACE (every 0.3s)
+        if (keyHandler.shootPressed) {
+            long now = System.currentTimeMillis();
+            if (now - lastShotTime >= shootDelay) {
+                int bulletX = x + width / 2 - 2; // center of ship
+                int bulletY = y - 10;            // just above the ship
+                bullets.add(new Bullet(bulletX, bulletY));
+                lastShotTime = now;
+            }
+        }
+
+        // Update bullets and remove the ones off-screen
+        for (int i = 0; i < bullets.size(); i++) {
+        Bullet b = bullets.get(i);
+        b.update();
+            if (!b.alive) {
+                bullets.remove(i);
+                i--;
+            }
+        }
+
         if (lives <= 0) {
             die();
         }
@@ -50,6 +77,11 @@ public class Player extends Entity{
     //Draw player on screen
     public void draw(Graphics g) {
         g.drawImage(sprite, x, y, width, height, null);
+
+        //draw bullets
+        for (Bullet b : bullets) {
+            b.draw(g);
+        }
     }
     
     //Moves character to the left
