@@ -4,6 +4,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public boolean leftPressed, rightPressed;
+    public boolean shootPressed = false;
 
 
     public void keyTyped(KeyEvent e) {
@@ -26,6 +27,12 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             rightPressed = true;
         }
+
+        if (code == KeyEvent.VK_SPACE) {
+            shootPressed = true;
+        }
+
+        
     }
 
     /* 
@@ -41,6 +48,10 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             rightPressed = false;
+        }
+
+        if (code == KeyEvent.VK_SPACE) {
+            shootPressed = false;
         }
     }
 }
