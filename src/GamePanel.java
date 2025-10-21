@@ -170,4 +170,9 @@ public class GamePanel extends JPanel implements Runnable {
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("FPS: " + currentFps, 10, 20);
     }
+  
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        requestFocusInWindow();
 }
