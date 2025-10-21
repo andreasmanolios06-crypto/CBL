@@ -1,6 +1,10 @@
 package src;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+
+import javax.swing.JPanel;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -44,6 +48,10 @@ public class GamePanel extends JPanel implements Runnable {
         setBackground(Color.BLACK);
         setFocusable(true); //can recieve key input focus
         setDoubleBuffered(true);
+
+        setFocusable(true);
+        requestFocusInWindow();
+
 
         //Allowing our keyHandler to listen to keys
         addKeyListener(keyHandler);
@@ -153,4 +161,11 @@ public class GamePanel extends JPanel implements Runnable {
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("FPS: " + currentFps, 10, 20);
     }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        requestFocusInWindow();
+    }
+
 }

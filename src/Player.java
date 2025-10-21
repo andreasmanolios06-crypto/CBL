@@ -1,4 +1,6 @@
 package src;
+
+import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +15,11 @@ public class Player {
     private int velocity; //Movement speed of player
 
     private Image sprite; //Scaled player sprite image
+
+    public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    private long lastShotTime = 0;
+    private final long shootDelay = 300; // 0.3 seconds
+
 
 
     //Constructor to initialize player position and size
@@ -39,6 +46,29 @@ public class Player {
         if (keyHandler.rightPressed) {
             moveRight(delta);
         }
+
+        // Shooting logic
+        // Shooting while holding SPACE (every 0.3s)
+        if (keyHandler.shootPressed) {
+            long now = System.currentTimeMillis();
+            if (now - lastShotTime >= shootDelay) {
+                int bulletX = x + width / 2 - 2; // center of ship
+                int bulletY = y - 10;            // just above the ship
+                bullets.add(new Bullet(bulletX, bulletY));
+                lastShotTime = now;
+            }
+}
+
+// Update bullets and remove the ones off-screen
+for (int i = 0; i < bullets.size(); i++) {
+    Bullet b = bullets.get(i);
+    b.update();
+    if (!b.alive) {
+        bullets.remove(i);
+        i--;
+    }
+}
+
     }
     
     //Loads player sprite from file
@@ -51,6 +81,10 @@ public class Player {
     //Draw player on screen
     public void draw(Graphics g) {
         g.drawImage(sprite, x, y, width, height, null);
+
+        for (Bullet b : bullets) {
+        b.draw(g);
+        }
     }
     
     //Moves character to the left
