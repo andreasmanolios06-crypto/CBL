@@ -1,37 +1,24 @@
 package src;
-
-import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 
-public class Player {
-    //Variables defining player size & position
-    private int width;
-    private int height;
-
-    private int x; //Initial X position of player
-    private int y; //Initial Y position of player
-
+public class Player extends Entity{
     private int velocity; //Movement speed of player
+    private int lives; //number of lives player has
+
+    private boolean active = true; 
 
     private Image sprite; //Scaled player sprite image
 
-    public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-    private long lastShotTime = 0;
-    private final long shootDelay = 300; // 0.3 seconds
-
-
 
     //Constructor to initialize player position and size
-    public Player(int startX, int startY, int width, int height, int velocity, String spritePath) {
-        //Initialize player position and sizes
-        this.x = startX;
-        this.y = startY;
-        this.width = width;
-        this.height = height;
+    public Player(int startX, int startY, int width, int height, int velocity, int lives, String spritePath) {
+        //Initialize asteroid position and sizes
+        super(startX, startY, width, height);
+        this.lives = lives;
         this.velocity = velocity;
 
-        loadSprite(spritePath); //Load player sprite from file
+        loadSprite(spritePath); //Load asteroid sprite from file
         
     }
     
@@ -47,29 +34,11 @@ public class Player {
             moveRight(delta);
         }
 
-        // Shooting logic
-        // Shooting while holding SPACE (every 0.3s)
-        if (keyHandler.shootPressed) {
-            long now = System.currentTimeMillis();
-            if (now - lastShotTime >= shootDelay) {
-                int bulletX = x + width / 2 - 2; // center of ship
-                int bulletY = y - 10;            // just above the ship
-                bullets.add(new Bullet(bulletX, bulletY));
-                lastShotTime = now;
-            }
-}
-
-// Update bullets and remove the ones off-screen
-for (int i = 0; i < bullets.size(); i++) {
-    Bullet b = bullets.get(i);
-    b.update();
-    if (!b.alive) {
-        bullets.remove(i);
-        i--;
+        if (lives <= 0) {
+            die();
+        }
     }
-}
 
-    }
     
     //Loads player sprite from file
     private void loadSprite(String path) {
@@ -81,10 +50,6 @@ for (int i = 0; i < bullets.size(); i++) {
     //Draw player on screen
     public void draw(Graphics g) {
         g.drawImage(sprite, x, y, width, height, null);
-
-        for (Bullet b : bullets) {
-        b.draw(g);
-        }
     }
     
     //Moves character to the left
@@ -98,4 +63,17 @@ for (int i = 0; i < bullets.size(); i++) {
         x += velocity * delta;
         if (x + width > GamePanel.WIDTH) x = GamePanel.WIDTH - width; //Prevent moving off right edge
     }
+
+    private void die() {
+        active = false;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void takeDamage() {
+        lives--;
+    }
+
 }
