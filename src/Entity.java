@@ -1,5 +1,5 @@
 package src;
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class Entity extends Rectangle{
     
@@ -9,4 +9,6 @@ public class Entity extends Rectangle{
         this.width = width; 
         this.height = height;
     }
+    
+
 } 

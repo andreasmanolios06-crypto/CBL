@@ -1,7 +1,7 @@
 package src;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -130,16 +130,80 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void checkCollisions() {
-        //between player and asteroid
-        Iterator<Asteroid> iterator = spawner.getAsteroids().iterator();
-        while (iterator.hasNext()) {
-            Asteroid asteroid = iterator.next();
-            if (player.intersects(asteroid)) {
+        //temporary lists
+        ArrayList<SpaceObjects> objectsToRemove = new ArrayList<>();
+        ArrayList<Bullet> bulletsToRemove = new ArrayList<>();
+
+        //check collisions between player and space objects
+        for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
+            if (player.intersects(spaceObject)) {
                 player.takeDamage();
-                iterator.remove(); // removes asteroid that collided with player
-                break;
+                objectsToRemove.add(spaceObject);
+                break; //one collisions per frame
             }
-        }   
+        }
+
+        //collisions between player and bullets
+        for (Bullet bullet : player.bullets) {
+            for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
+                if ((spaceObject instanceof Enemy || spaceObject instanceof Asteroid) && 
+                    bullet.intersects(spaceObject)) {
+                    
+                    bulletsToRemove.add(bullet);
+                    
+                    if (spaceObject instanceof Enemy) {
+                        Enemy enemy = (Enemy) spaceObject;
+                        enemy.takeDamage();
+                        if (!enemy.isActive()) {
+                            objectsToRemove.add(spaceObject);
+                        }
+                    } else if (spaceObject instanceof Asteroid) {
+            
+                    }
+                    break;
+                }
+            }
+        }
+
+        // collisions between enemy bullets and player or asteroids
+        for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
+            if (spaceObject instanceof Enemy) {
+                Enemy enemy = (Enemy) spaceObject;
+                
+                for (Bullet bullet : enemy.getBullets()) {
+                    //for player
+                    if (bullet.getBounds().intersects(player.getBounds())) {
+                        bulletsToRemove.add(bullet);
+                        player.takeDamage();
+                        System.out.println("Player hit by enemy bullet");
+                        continue; // next bullet
+                    }
+                    
+                    // for asteroids
+                    for (SpaceObjects asteroid : spawner.getspaceObjects()) {
+                        if (asteroid instanceof Asteroid && bullet.getBounds().intersects(asteroid.getBounds())) {
+                            
+                            bulletsToRemove.add(bullet);  // Only remove the bullet
+                            System.out.println("Enemy bullet hit asteroid (bullet destroyed)");
+                            break;
+                            
+                        }
+                    }
+                }
+            }    
+        }
+
+        //remove objects after loop
+        spawner.getspaceObjects().removeAll(objectsToRemove);
+        player.bullets.removeAll(bulletsToRemove);
+        
+        //remove enemy bullets from enemies
+        for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
+            if (spaceObject instanceof Enemy) {
+                Enemy enemy = (Enemy) spaceObject;
+                enemy.getBullets().removeAll(bulletsToRemove);
+            }
+        }
     }
 
     @Override

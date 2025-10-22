@@ -5,13 +5,14 @@ import java.util.Random;
 import java.awt.*;
 
 
-//using a lane system, this class manages what entities spawn (asteroids and enemies) and in which lanes, so they dont collide 
+//using a lane system, this class manages what spaceObjects spawn (asteroids and enemies) and in which lanes, so they dont collide 
 public class Spawner {
-    private List<Asteroid> asteroids; //array containing asteroids
+    private List<SpaceObjects> spaceObjects; //array containing asteroids
+
     private Random random; 
     private int laneCount; //number of lanes in game
     private int laneWidth; //width of a lane
-    private int asteroidSize = 64;
+    private int size = 64;
 
     //timer 
     private double spawnTimer = 0; 
@@ -22,7 +23,7 @@ public class Spawner {
     
     //defining object of AsteroidManager
     public Spawner(int laneCount, int gameWidth) {
-        this.asteroids = new ArrayList<>();
+        this.spaceObjects = new ArrayList<>();
         this.random = new Random();
         this.laneCount = laneCount;
         this.laneWidth = gameWidth / laneCount;
@@ -30,12 +31,12 @@ public class Spawner {
 
     public void update(double delta) {
         //update asteroids 
-        for (Asteroid asteroid: asteroids) {
-            asteroid.update(delta);
+        for (SpaceObjects spaceObject: spaceObjects) {
+            spaceObject.update(delta);
         }
 
         //remove asteroids if they out of bounds
-        asteroids.removeIf(asteroid -> asteroid.getY() > GamePanel.HEIGHT);
+        spaceObjects.removeIf(spaceObject -> spaceObject.getY() > GamePanel.HEIGHT);
 
         // Spawn new asteroids randomly
         spawnTimer += delta / 60.0; //converting delta to seconds
@@ -46,12 +47,12 @@ public class Spawner {
         }
 
         if (spawnTimer >= spawn_interval) {
-            spawnAsteroid();
+            spawnspaceObject();
             spawnTimer = 0; //reset timer
         }
     }
 
-    private void spawnAsteroid() {
+    private void spawnspaceObject() {
         //selects spawning method 
         int method = random.nextInt(4) + 1;
     
@@ -72,33 +73,38 @@ public class Spawner {
         int x1 = calculateLaneX(lane1);
         int x2 = calculateLaneX(lane2);
         int x3 = calculateLaneX(lane3);
-        int startY = -asteroidSize; 
+        int startY = -size; 
 
         // Create asteroids with their respective positions
-        Asteroid asteroid1 = new Asteroid(lane1, x1, startY, asteroidSize, asteroidSize, 3*difficulty, "src/sprites/asteroid_placeholder.png");
-        Asteroid asteroid2 = new Asteroid(lane2, x2, startY, asteroidSize, asteroidSize, 3*difficulty, "src/sprites/asteroid_placeholder.png");
-        Asteroid asteroid3 = new Asteroid(lane3, x3, startY, asteroidSize, asteroidSize, 3*difficulty, "src/sprites/asteroid_placeholder.png");
+        Asteroid asteroid1 = new Asteroid(lane1, x1, startY, size, size, 3*difficulty, "src/sprites/asteroid_placeholder.png");
+        Asteroid asteroid2 = new Asteroid(lane2, x2, startY, size, size, 3*difficulty, "src/sprites/asteroid_placeholder.png");
+        Asteroid asteroid3 = new Asteroid(lane3, x3, startY, size, size, 3*difficulty, "src/sprites/asteroid_placeholder.png");
+
+        //Create enemy type
+        Enemy enemy1 = new Enemy(lane1, x1, startY, size, size, 3*difficulty, 0, "src/sprites/enemy.png");
+
+        
         
 
         //Different ways of spawning for each wave
         if (method == 1) {
-            asteroids.add(asteroid1);
+            spaceObjects.add(asteroid1);
         }
         else if (method == 2) {
-            asteroids.add(asteroid1);
-            asteroids.add(asteroid2);
+            spaceObjects.add(asteroid1);
+            spaceObjects.add(asteroid2);
         }
         else if (method == 3) {
             int random2 = random.nextInt(2) + 1;
             
             if (random2 == 1) {
-                asteroids.add(asteroid1);
-                asteroids.add(asteroid2);
-                asteroids.add(asteroid3);
+                spaceObjects.add(asteroid1);
+                spaceObjects.add(asteroid2);
+                spaceObjects.add(asteroid3);
             } 
             else if (random2 == 2) {
-                asteroids.add(asteroid1);
-                asteroids.add(asteroid2);
+                spaceObjects.add(enemy1);
+                spaceObjects.add(asteroid2);
             }
         } else {
             return;
@@ -108,16 +114,16 @@ public class Spawner {
 
     //calculate X position based on lane number
     private int calculateLaneX(int lane) {
-        return (lane - 1) * laneWidth + (laneWidth/2) - (asteroidSize/2); //centered in lane
+        return (lane - 1) * laneWidth + (laneWidth/2) - (size/2); //centered in lane
     }
 
-    public List<Asteroid> getAsteroids() {
-        return asteroids;
+    public List<SpaceObjects> getspaceObjects() {
+        return spaceObjects;
     }
 
     public void draw(Graphics g) {
-        for (Asteroid asteroid: asteroids) {
-            asteroid.draw(g);
+        for (SpaceObjects spaceObject: spaceObjects) {
+            spaceObject.draw(g);
         }
     }
 
