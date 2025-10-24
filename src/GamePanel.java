@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
         HEIGHT - 100, 
         64, 
         64, 
-        7, 
+        8, 
         3,
         "src/sprites/swordfish_sprite.png");
 
@@ -161,7 +161,7 @@ public class GamePanel extends JPanel implements Runnable {
             
                     }
                     break;
-                }
+                } 
             }
         }
 
