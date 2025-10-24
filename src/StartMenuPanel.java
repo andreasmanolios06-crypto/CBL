@@ -15,7 +15,7 @@ public class StartMenuPanel extends JPanel {
         add(Box.createVerticalGlue());
 
         // --- Title ---
-        JLabel title = new JLabel("SPACE GAME");
+        JLabel title = new JLabel("ASTEROID BLUES");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setFont(new Font("Monospaced", Font.BOLD, 48));
         title.setForeground(Color.WHITE);

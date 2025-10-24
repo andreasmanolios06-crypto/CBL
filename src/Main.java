@@ -5,8 +5,16 @@ import java.awt.*;  // for CardLayout
 
 public class Main {
     public static void main(String[] args) {
+        //preloading sounds to avoid frame drops
+        SoundPlayer.playSound("src/sounds/laserShoot.wav");
+        SoundPlayer.playSound("src/sounds/explosion.wav");
+        SoundPlayer.playSound("src/sounds/hitHurt.wav");
+        SoundPlayer.playSound("src/sounds/random.wav");
+        SoundPlayer.playSound("src/sounds/enemylaserShoot.wav");
+        SoundPlayer.playSound("src/sounds/playerDamage.wav");
+
         // Create the main window
-        JFrame frame = new JFrame("Space Game");
+        JFrame frame = new JFrame("ASTEROID BLUES");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
 

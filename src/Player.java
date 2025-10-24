@@ -47,6 +47,7 @@
                     int bulletX = x + width / 2 - 2; // center of ship
                     int bulletY = y - 10;            // just above the ship
                     bullets.add(new Bullet(bulletX, bulletY, 4, 12, 12, true));
+                    SoundPlayer.playSound("src\\sounds\\laserShoot.wav");
                     lastShotTime = now;
                 }
             }

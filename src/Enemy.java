@@ -36,7 +36,8 @@ public class Enemy extends SpaceObjects {
             if (random.nextDouble() < 0.3) { // 30% chance to shoot each interval
                 int bulletX = x + width / 2 - 2; // center of enemy
                 int bulletY = y + height; // below the enemy
-                bullets.add(new Bullet(bulletX, bulletY, 4, 12, 10, false)); 
+                bullets.add(new Bullet(bulletX, bulletY, 4, 12, 10, false));
+                SoundPlayer.playSound("src/sounds/enemylaserShoot.wav");
                 lastShotTime = now;
             }
         }

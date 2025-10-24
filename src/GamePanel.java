@@ -138,12 +138,13 @@ public class GamePanel extends JPanel implements Runnable {
         for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
             if (player.intersects(spaceObject)) {
                 player.takeDamage();
+                SoundPlayer.playSound("src/sounds/playerDamage.wav");
                 objectsToRemove.add(spaceObject);
                 break; //one collisions per frame
             }
         }
 
-        //collisions between player and bullets
+        //collisions with player bullets
         for (Bullet bullet : player.bullets) {
             for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
                 if ((spaceObject instanceof Enemy || spaceObject instanceof Asteroid) && 
@@ -154,11 +155,12 @@ public class GamePanel extends JPanel implements Runnable {
                     if (spaceObject instanceof Enemy) {
                         Enemy enemy = (Enemy) spaceObject;
                         enemy.takeDamage();
+                        SoundPlayer.playSound("src/sounds/explosion.wav");
                         if (!enemy.isActive()) {
                             objectsToRemove.add(spaceObject);
                         }
                     } else if (spaceObject instanceof Asteroid) {
-            
+                        SoundPlayer.playSound("src/sounds/hitHurt.wav");
                     }
                     break;
                 } 
@@ -176,13 +178,14 @@ public class GamePanel extends JPanel implements Runnable {
                         bulletsToRemove.add(bullet);
                         player.takeDamage();
                         System.out.println("Player hit by enemy bullet");
+                        SoundPlayer.playSound("src/sounds/playerDamage.wav");
                         continue; // next bullet
                     }
                     
                     // for asteroids
                     for (SpaceObjects asteroid : spawner.getspaceObjects()) {
                         if (asteroid instanceof Asteroid && bullet.getBounds().intersects(asteroid.getBounds())) {
-                            
+                            SoundPlayer.playSound("src/sounds/hitHurt.wav");
                             bulletsToRemove.add(bullet);  // Only remove the bullet
                             System.out.println("Enemy bullet hit asteroid (bullet destroyed)");
                             break;

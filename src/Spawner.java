@@ -98,7 +98,6 @@ public class Spawner {
             int random2 = random.nextInt(2) + 1;
             
             if (random2 == 1) {
-                spaceObjects.add(asteroid1);
                 spaceObjects.add(asteroid2);
                 spaceObjects.add(asteroid3);
             } 
