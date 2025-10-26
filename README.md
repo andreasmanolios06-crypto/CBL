@@ -1,3 +1,6 @@
+LINK TO GITHUB PAGE:
+https://github.com/andreasmanolios06-crypto/CBL
+
 Step-by-step instructions to run the game:
 - download files from github as a zip
 - export zip file
