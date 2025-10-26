@@ -16,11 +16,11 @@ public class Spawner {
 
     //timer 
     private double spawnTimer = 0; 
-    private  double spawn_interval = 0.5; //every x seconds
+    private  double spawn_interval = 0.6; //every x seconds 
 
-    //TODO: FIX DIFFICULTY 
-    private int difficulty = 2;
-    
+    //difficulty (acts as velocity) 
+    public int difficulty = 6;
+       
     //defining object of AsteroidManager
     public Spawner(int laneCount, int gameWidth) {
         this.spaceObjects = new ArrayList<>();
@@ -35,19 +35,32 @@ public class Spawner {
             spaceObject.update(delta);
         }
 
-        //remove asteroids if they out of bounds
-        spaceObjects.removeIf(spaceObject -> spaceObject.getY() > GamePanel.HEIGHT);
+        //remove objects out of bounds and award points
+        spaceObjects.removeIf(spaceObject -> {
+            if (spaceObject.getY() > GamePanel.HEIGHT) {
+                //points increase
+                if (spaceObject instanceof Asteroid) {
+                    GamePanel.increaseScore(35); 
+                }
+
+                return true;
+            }
+            return false; 
+        });
 
         // Spawn new asteroids randomly
         spawnTimer += delta / 60.0; //converting delta to seconds
         
         //temporary difficulty over time implementation
-        if (difficulty < 20) {
-            difficulty += 0.5;
-        }
 
         if (spawnTimer >= spawn_interval) {
             spawnspaceObject();
+            
+            if (difficulty < 10) {
+                difficulty += 1;
+                spawn_interval -= 0.05;
+            }
+
             spawnTimer = 0; //reset timer
         }
     }
@@ -76,12 +89,12 @@ public class Spawner {
         int startY = -size; 
 
         // Create asteroids with their respective positions
-        Asteroid asteroid1 = new Asteroid(lane1, x1, startY, size, size, 3*difficulty, "src/sprites/asteroid_placeholder.png");
-        Asteroid asteroid2 = new Asteroid(lane2, x2, startY, size, size, 3*difficulty, "src/sprites/asteroid_placeholder.png");
-        Asteroid asteroid3 = new Asteroid(lane3, x3, startY, size, size, 3*difficulty, "src/sprites/asteroid_placeholder.png");
+        Asteroid asteroid1 = new Asteroid(lane1, x1, startY, size, size, difficulty, "src\\sprites\\asteroid_placeholder.png");
+        Asteroid asteroid2 = new Asteroid(lane2, x2, startY, size, size, difficulty, "src\\sprites\\asteroid_placeholder.png");
+        Asteroid asteroid3 = new Asteroid(lane3, x3, startY, size, size, difficulty, "src\\sprites\\asteroid_placeholder.png");
 
         //Create enemy type
-        Enemy enemy1 = new Enemy(lane1, x1, startY, size, size, 3*difficulty, 0, "src/sprites/enemy.png");
+        Enemy enemy1 = new Enemy(lane1, x1, startY, size, size, difficulty, 0, "src\\sprites\\enemy.png");
 
         
         

@@ -24,6 +24,11 @@ public class GamePanel extends JPanel implements Runnable {
     private int frameCount = 0;
     private int currentFps = 0;
 
+    //Game over and score
+    private boolean gameRunning = true;
+    public static int score = 0;
+    private JFrame parentFrame;
+
     //keyhandler declaration
     KeyHandler keyHandler = new KeyHandler();
 
@@ -35,17 +40,24 @@ public class GamePanel extends JPanel implements Runnable {
         64, 
         8, 
         3,
-        "src/sprites/swordfish_sprite.png");
+        "src\\sprites\\swordfish_sprite.png");
 
     //asteroid manager instance
     private Spawner spawner = new Spawner(5, GamePanel.WIDTH);
 
+    //hearts
+    private Image heartImage;
+
     //game panel instance   
-    public GamePanel() {
+    public GamePanel(JFrame jFrame) {
+        this.parentFrame = jFrame;
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.BLACK);
         setFocusable(true); //can recieve key input focus
         setDoubleBuffered(true);
+
+        // Load heart image
+        heartImage = new ImageIcon("src\\sprites\\heart.png").getImage();
 
         //Allowing our keyHandler to listen to keys
         addKeyListener(keyHandler);
@@ -67,11 +79,33 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start(); //start the thread (calls run() method)
     }
 
+    private void GameOver() {
+        gameRunning = false;
+
+        //creating game over panel
+        GameOverPanel gameOverPanel = new GameOverPanel(this::restartGame, score);
+        
+        parentFrame.getContentPane().removeAll();
+        parentFrame.getContentPane().add(gameOverPanel);
+        parentFrame.revalidate();
+        parentFrame.repaint();
+    }
+    
+    private void restartGame() {
+        score = 0;
+        parentFrame.getContentPane().removeAll();
+        GamePanel newGamePanel = new GamePanel(parentFrame);
+        parentFrame.add(newGamePanel);
+        parentFrame.revalidate();
+        parentFrame.repaint();
+        newGamePanel.startGame();
+    }
+
     @Override
     public void run() {
         long lastUpdateTime = System.nanoTime();
 
-        while (running) {
+        while (running && gameRunning) {
             long now = System.nanoTime(); //current time in nanoseconds
             long updateLength = now - lastUpdateTime; //how long since last frame
             lastUpdateTime = now; //remember current time for next frame
@@ -96,6 +130,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
         
     private void updateGame(double delta) {
+        //checks if game is over or not
+        if (!gameRunning) return;
+
         //Update star positions (moving down the screen) - simple approach
         for (int i = 0; i < starY.length; i++) {
             starY[i] += starSpeed[i]; // Remove delta for stars - they're background
@@ -138,8 +175,12 @@ public class GamePanel extends JPanel implements Runnable {
         for (SpaceObjects spaceObject : spawner.getspaceObjects()) {
             if (player.intersects(spaceObject)) {
                 player.takeDamage();
-                SoundPlayer.playSound("src/sounds/playerDamage.wav");
+                SoundPlayer.playSound("src\\sounds\\playerDamage.wav");
                 objectsToRemove.add(spaceObject);
+
+                if (player.lives <= 0) {
+                    GameOver();
+                }
                 break; //one collisions per frame
             }
         }
@@ -155,12 +196,13 @@ public class GamePanel extends JPanel implements Runnable {
                     if (spaceObject instanceof Enemy) {
                         Enemy enemy = (Enemy) spaceObject;
                         enemy.takeDamage();
-                        SoundPlayer.playSound("src/sounds/explosion.wav");
+                        increaseScore(500);
+                        SoundPlayer.playSound("src\\sounds\\explosion.wav");
                         if (!enemy.isActive()) {
                             objectsToRemove.add(spaceObject);
                         }
                     } else if (spaceObject instanceof Asteroid) {
-                        SoundPlayer.playSound("src/sounds/hitHurt.wav");
+                        SoundPlayer.playSound("src\\sounds\\hitHurt.wav");
                     }
                     break;
                 } 
@@ -178,14 +220,18 @@ public class GamePanel extends JPanel implements Runnable {
                         bulletsToRemove.add(bullet);
                         player.takeDamage();
                         System.out.println("Player hit by enemy bullet");
-                        SoundPlayer.playSound("src/sounds/playerDamage.wav");
+                        SoundPlayer.playSound("src\\sounds\\playerDamage.wav");
+
+                        if (player.lives <= 0) {
+                            GameOver();
+                        }
                         continue; // next bullet
                     }
                     
                     // for asteroids
                     for (SpaceObjects asteroid : spawner.getspaceObjects()) {
                         if (asteroid instanceof Asteroid && bullet.getBounds().intersects(asteroid.getBounds())) {
-                            SoundPlayer.playSound("src/sounds/hitHurt.wav");
+                            SoundPlayer.playSound("src\\sounds\\hitHurt.wav");
                             bulletsToRemove.add(bullet);  // Only remove the bullet
                             System.out.println("Enemy bullet hit asteroid (bullet destroyed)");
                             break;
@@ -207,6 +253,11 @@ public class GamePanel extends JPanel implements Runnable {
                 enemy.getBullets().removeAll(bulletsToRemove);
             }
         }
+    }
+
+    //function to increase score
+    public static void increaseScore(int points) {
+        score += points;
     }
 
     @Override
@@ -232,10 +283,21 @@ public class GamePanel extends JPanel implements Runnable {
         //Draw asteroid sprite
         spawner.draw(g);
 
-        //Draw FPS Count 
-        g.setColor(Color.GREEN);
-        g.setFont(new Font("Arial", Font.BOLD, 16));
-        g.drawString("FPS: " + currentFps, 10, 20);
+        //draw score
+        g.setFont(new Font("Arial", Font.BOLD, 28));
+        g.drawString(String.valueOf(score), 20, 30);
+
+        //Draw hearts
+        int health = player.lives;
+        int heartSize = 32;
+        int spacing = 8;
+        int totalWidth = (heartSize + spacing) * health;
+
+        for (int i = 0; i < health; i++) {
+            int x = getWidth() - totalWidth + i * (heartSize + spacing);
+            int y = 10; // top left
+            g.drawImage(heartImage, x, y, heartSize, heartSize, null);
+        }
     }
   
     @Override
@@ -243,4 +305,6 @@ public class GamePanel extends JPanel implements Runnable {
         super.addNotify();
         requestFocusInWindow();
     }
+
+    
 }

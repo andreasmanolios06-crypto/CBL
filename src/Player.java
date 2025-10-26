@@ -5,7 +5,7 @@
 
     public class Player extends Entity{
         private int velocity; //Movement speed of player
-        private int lives; //number of lives player has
+        public int lives; //number of lives player has
 
         private boolean active = true; 
 

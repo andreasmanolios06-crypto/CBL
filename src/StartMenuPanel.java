@@ -35,4 +35,5 @@ public class StartMenuPanel extends JPanel {
         // keep everything centered
         add(Box.createVerticalGlue());
     }
+    
 }

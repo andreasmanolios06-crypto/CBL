@@ -6,26 +6,27 @@ import java.awt.*;  // for CardLayout
 public class Main {
     public static void main(String[] args) {
         //preloading sounds to avoid frame drops
-        SoundPlayer.playSound("src/sounds/laserShoot.wav");
-        SoundPlayer.playSound("src/sounds/explosion.wav");
-        SoundPlayer.playSound("src/sounds/hitHurt.wav");
-        SoundPlayer.playSound("src/sounds/random.wav");
-        SoundPlayer.playSound("src/sounds/enemylaserShoot.wav");
-        SoundPlayer.playSound("src/sounds/playerDamage.wav");
+        SoundPlayer.playSound("src\\sounds\\laserShoot.wav");
+        SoundPlayer.playSound("src\\sounds\\explosion.wav");
+        SoundPlayer.playSound("src\\sounds\\hitHurt.wav");
+        SoundPlayer.playSound("src\\sounds\\random.wav");
+        SoundPlayer.playSound("src\\sounds\\enemylaserShoot.wav");
+        SoundPlayer.playSound("src\\sounds\\playerDamage.wav");
 
         // Create the main window
         JFrame frame = new JFrame("ASTEROID BLUES");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
-        // We’ll swap between MENU and GAME using a CardLayout
+        //swap between MENU and GAME using a CardLayout
         CardLayout cardLayout = new CardLayout();
         JPanel container = new JPanel(cardLayout);
 
-        // Create the game panel
-        GamePanel gamePanel = new GamePanel();
+        //creating game panel
+        GamePanel gamePanel = new GamePanel(frame);
 
-        // Create the start menu; when the button is clicked, show the game
+
+        //create start menu
         StartMenuPanel startMenu = new StartMenuPanel(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +34,7 @@ public class Main {
                 
                 gamePanel.startGame();
 
-                // make sure the game panel gets keyboard focus right after showing
+                // gets keyboard focus
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -44,17 +45,19 @@ public class Main {
             }
         });
 
-        // Add both screens to the container
+        
+
+        //both screens to the container
         container.add(startMenu, "MENU");
         container.add(gamePanel, "GAME");
 
-        // Put the container in the window and show it
+        //put the container in the window and show it
         frame.setContentPane(container);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // Start on the menu screen
+        //start on the menu screen
         cardLayout.show(container, "MENU");
     }
 }
