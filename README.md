@@ -1,8 +1,13 @@
 Step-by-step instructions to run the game:
-
+- download files from github as a zip
+- export zip file
+- open vs code
+- open file CBL in vscode
+- run project
 
 Any setup requirements or dependencies:
-Java downloaded
+- java downloaded
+- have vs code
 
 Which features to test and how to access them during gameplay:
 Loading Game - Pressing Start button changes scene
